@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from "react";
-import { Box, Typography, Grid, Button } from "@mui/material";
+import { Box, Typography, Grid, Button, Fade } from "@mui/material";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
 import TextField from "@mui/material/TextField";
 import AdminListViewPage from "./AdminListView";
+
+import ITDepartmentScreen from "./ITdepartmentScreen";
 function AdminPage() {
   const [location, setLocation] = React.useState("");
   const [floor, setFloor] = useState();
@@ -116,82 +118,97 @@ function AdminPage() {
     ]);
   }, []);
   return (
-    <Box>
-      <Grid container spacing={1}>
-        <Grid item md={3} xs={6} sm={4}>
-          <FormControl fullWidth>
-            <InputLabel id="demo-simple-select-label">Location</InputLabel>
-            <Select
-              labelId="demo-simple-select-label"
-              id="demo-simple-select"
-              value={location}
-              label="Location"
-              onChange={handleChangeLocation}
-            >
-              <MenuItem value="Bengalore">Bengalore</MenuItem>
-              <MenuItem value="Coimbtore">Coimbtore</MenuItem>
-              <MenuItem value="Mohali">Mohali</MenuItem>
-              <MenuItem value="Pune">Pune</MenuItem>
-            </Select>
-          </FormControl>
-        </Grid>
+    <>
+      <Box>
+        {/* <Fade in={false} unmountonExit>
+          <Box>
+            <Grid container spacing={1}>
+              <Grid item md={3} xs={6} sm={4}>
+                <FormControl fullWidth>
+                  <InputLabel id="demo-simple-select-label">
+                    Location
+                  </InputLabel>
+                  <Select
+                    labelId="demo-simple-select-label"
+                    id="demo-simple-select"
+                    value={location}
+                    label="Location"
+                    onChange={handleChangeLocation}
+                  >
+                    <MenuItem value="Bengalore">Bengalore</MenuItem>
+                    <MenuItem value="Coimbtore">Coimbtore</MenuItem>
+                    <MenuItem value="Mohali">Mohali</MenuItem>
+                    <MenuItem value="Pune">Pune</MenuItem>
+                  </Select>
+                </FormControl>
+              </Grid>
 
-        <Grid item md={3} xs={6} sm={4}>
-          <FormControl fullWidth>
-            <TextField
-              onChange={onChangeFloor}
-              value={floor}
-              error={Boolean(errFloorMessg)}
-              id="outlined-error-helper-text"
-              label="Enter Floor No"
-              helperText={errFloorMessg}
-            />
-          </FormControl>
-        </Grid>
+              <Grid item md={3} xs={6} sm={4}>
+                <FormControl fullWidth>
+                  <TextField
+                    onChange={onChangeFloor}
+                    value={floor}
+                    error={Boolean(errFloorMessg)}
+                    id="outlined-error-helper-text"
+                    label="Enter Floor No"
+                    helperText={errFloorMessg}
+                  />
+                </FormControl>
+              </Grid>
 
-        <Grid item md={3} xs={6} sm={4}>
-          <FormControl fullWidth>
-            <TextField
-              onChange={onChangeMaxCap}
-              value={maxCapacity}
-              error={Boolean(errMaxCapMessg)}
-              id="outlined-error-helper-text"
-              label="Max Capacity"
-              // defaultValue="Hello World"
-              helperText={errMaxCapMessg}
-            />
-          </FormControl>
-        </Grid>
+              <Grid item md={3} xs={6} sm={4}>
+                <FormControl fullWidth>
+                  <TextField
+                    onChange={onChangeMaxCap}
+                    value={maxCapacity}
+                    error={Boolean(errMaxCapMessg)}
+                    id="outlined-error-helper-text"
+                    label="Max Capacity"
+                    // defaultValue="Hello World"
+                    helperText={errMaxCapMessg}
+                  />
+                </FormControl>
+              </Grid>
 
-        <Grid item md={3} xs={6} sm={4}>
-          <FormControl fullWidth>
-            <TextField
-              onChange={onChangeReserveSeat}
-              value={reservedSeat}
-              error={Boolean(errReservedSeatMessg)}
-              id="outlined-error-helper-text"
-              label="Reserved Seat"
-              helperText={errReservedSeatMessg}
-            />
-          </FormControl>
-        </Grid>
-      </Grid>
-      <Box display="flex" justifyContent="right" paddingTop={2}>
-        <Button
-          onClick={() => {
-            createSeatList();
-          }}
-          variant="contained"
-          color="primary"
-        >
-          Create
-        </Button>
+              <Grid item md={3} xs={6} sm={4}>
+                <FormControl fullWidth>
+                  <TextField
+                    onChange={onChangeReserveSeat}
+                    value={reservedSeat}
+                    error={Boolean(errReservedSeatMessg)}
+                    id="outlined-error-helper-text"
+                    label="Reserved Seat"
+                    helperText={errReservedSeatMessg}
+                  />
+                </FormControl>
+              </Grid>
+            </Grid>
+            <Box display="flex" justifyContent="right" paddingTop={2}>
+              <Button
+                onClick={() => {
+                  createSeatList();
+                }}
+                variant="contained"
+                color="primary"
+              >
+                Create
+              </Button>
+            </Box>
+
+            <Box paddingTop={2}>
+              <AdminListViewPage data={data} isLoading={isLoading} />
+            </Box>
+          </Box>
+        </Fade> */}
       </Box>
-
-      <Box paddingTop={2}>
-        <AdminListViewPage data={data} isLoading={isLoading} />
+      <Box>
+        <Fade in={true} unmountonExit>
+          <Box>
+            <ITDepartmentScreen />
+          </Box>
+        </Fade>
       </Box>
-    </Box>
+    </>
   );
 }
 
