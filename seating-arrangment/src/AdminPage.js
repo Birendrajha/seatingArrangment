@@ -6,8 +6,9 @@ import FormControl from "@mui/material/FormControl";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
 import TextField from "@mui/material/TextField";
 import AdminListViewPage from "./AdminListView";
-
+import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
 import ITDepartmentScreen from "./ITdepartmentScreen";
+import AdminFloorView from "./AdminFloorView";
 function AdminPage() {
   const [location, setLocation] = React.useState("");
   const [floor, setFloor] = useState();
@@ -20,9 +21,18 @@ function AdminPage() {
   const [errFloorMessg, setErrFloorMessg] = useState("");
   const [errMaxCapMessg, setErrorMaxCapMessg] = useState("");
   const [errReservedSeatMessg, setErrReservedMessg] = useState("");
-
+  const [viewFloorArrangment, setViewFloorArrangment] = useState(false);
+  const [selectedFloor, setSelectedFloor] = useState(1);
+  const [selectedLocation, setSelectedLocation] = useState("");
+  const [configureSeat, setConfigureSeat] = useState(false);
   const handleChangeLocation = (event) => {
     setLocation(event.target.value);
+  };
+
+  const openFloorView = (row) => {
+    setViewFloorArrangment(true);
+    setSelectedFloor(row.floor);
+    setSelectedLocation(row.location);
   };
 
   const onChangeFloor = (event) => {
@@ -62,23 +72,27 @@ function AdminPage() {
     setReservedSeat(event.target.value);
     const _reservedSeat = event.target.value;
     if (+_reservedSeat >= maxCapacity) {
-      setErrReservedMessg("Reserved Seat Cant Exceed Max Capacity");
+      setErrReservedMessg("Reserved Seat Can't Exceed Max Capacity");
+    } else {
+      setErrReservedMessg(undefined);
     }
+  };
+  const goBack = () => {
+    setViewFloorArrangment(false);
   };
   const createSeatList = () => {
     const dataForAlreadySelectedLoc = data.filter(
       (itm) => itm.location === location
     );
     const isDulicate = dataForAlreadySelectedLoc.filter(
-      (itm) => itm.floor == floor
+      (itm) => Number(itm.floor) == Number(floor)
     );
-    console.log(isDulicate);
     if (isDulicate?.length > 0) {
       setError(true);
       setErrFloorMessg("Data for this floor has already been Added");
       return;
-    } else if (reservedSeat >= maxCapacity) {
-      setErrReservedMessg("Reserved Seat Cant Exceed Max Capacity");
+    } else if (Number(reservedSeat) >= Number(maxCapacity)) {
+      setErrReservedMessg("Reserved Seat Can't Exceed Max Capacity");
       return;
     } else {
       setIsLoading(true);
@@ -120,89 +134,143 @@ function AdminPage() {
   return (
     <>
       <Box>
-        {/* <Fade in={false} unmountonExit>
+        <Fade in={!viewFloorArrangment} unmountOnExit>
           <Box>
-            <Grid container spacing={1}>
-              <Grid item md={3} xs={6} sm={4}>
-                <FormControl fullWidth>
-                  <InputLabel id="demo-simple-select-label">
-                    Location
-                  </InputLabel>
-                  <Select
-                    labelId="demo-simple-select-label"
-                    id="demo-simple-select"
-                    value={location}
-                    label="Location"
-                    onChange={handleChangeLocation}
+            {configureSeat ? (
+              <Grid container spacing={1}>
+                <Grid item md={3} xs={6} sm={4}>
+                  <FormControl fullWidth>
+                    <InputLabel id="demo-simple-select-label">
+                      Location
+                    </InputLabel>
+                    <Select
+                      labelId="demo-simple-select-label"
+                      id="demo-simple-select"
+                      value={location}
+                      label="Location"
+                      onChange={handleChangeLocation}
+                    >
+                      <MenuItem value="Banglore">Banglore</MenuItem>
+                      <MenuItem value="Coimbtore">Coimbtore</MenuItem>
+                      <MenuItem value="Mohali">Mohali</MenuItem>
+                      <MenuItem value="Pune">Pune</MenuItem>
+                    </Select>
+                  </FormControl>
+                </Grid>
+
+                <Grid item md={3} xs={6} sm={4}>
+                  <FormControl fullWidth>
+                    <TextField
+                      onChange={onChangeFloor}
+                      value={floor}
+                      error={Boolean(errFloorMessg)}
+                      id="outlined-error-helper-text"
+                      label="Enter Floor No"
+                      helperText={errFloorMessg}
+                    />
+                  </FormControl>
+                </Grid>
+
+                <Grid item md={3} xs={6} sm={4}>
+                  <FormControl fullWidth>
+                    <TextField
+                      onChange={onChangeMaxCap}
+                      value={maxCapacity}
+                      error={Boolean(errMaxCapMessg)}
+                      id="outlined-error-helper-text"
+                      label="Max Capacity"
+                      // defaultValue="Hello World"
+                      helperText={errMaxCapMessg}
+                    />
+                  </FormControl>
+                </Grid>
+
+                <Grid item md={3} xs={6} sm={4}>
+                  <FormControl fullWidth>
+                    <TextField
+                      onChange={onChangeReserveSeat}
+                      value={reservedSeat}
+                      error={Boolean(errReservedSeatMessg)}
+                      id="outlined-error-helper-text"
+                      label="Reserved Seat"
+                      helperText={errReservedSeatMessg}
+                    />
+                  </FormControl>
+                </Grid>
+              </Grid>
+            ) : null}
+            <Box
+              display="flex"
+              justifyContent="right"
+              spacing={1}
+              paddingTop={2}
+            >
+              {configureSeat ? (
+                <Box display="flex">
+                  <Box marginRight={1}>
+                    <Button
+                      onClick={() => {
+                        setConfigureSeat(false);
+                      }}
+                      variant="contained"
+                      color="inherit"
+                    >
+                      Discard
+                    </Button>
+                  </Box>
+                  <Button
+                    onClick={() => {
+                      createSeatList();
+                    }}
+                    variant="contained"
+                    color="primary"
+                    disabled={
+                      !Boolean(location) ||
+                      !Boolean(floor) ||
+                      !Boolean(maxCapacity) ||
+                      !Boolean(reservedSeat) ||
+                      Number(reservedSeat) >= Number(maxCapacity)
+                    }
                   >
-                    <MenuItem value="Bengalore">Bengalore</MenuItem>
-                    <MenuItem value="Coimbtore">Coimbtore</MenuItem>
-                    <MenuItem value="Mohali">Mohali</MenuItem>
-                    <MenuItem value="Pune">Pune</MenuItem>
-                  </Select>
-                </FormControl>
-              </Grid>
-
-              <Grid item md={3} xs={6} sm={4}>
-                <FormControl fullWidth>
-                  <TextField
-                    onChange={onChangeFloor}
-                    value={floor}
-                    error={Boolean(errFloorMessg)}
-                    id="outlined-error-helper-text"
-                    label="Enter Floor No"
-                    helperText={errFloorMessg}
-                  />
-                </FormControl>
-              </Grid>
-
-              <Grid item md={3} xs={6} sm={4}>
-                <FormControl fullWidth>
-                  <TextField
-                    onChange={onChangeMaxCap}
-                    value={maxCapacity}
-                    error={Boolean(errMaxCapMessg)}
-                    id="outlined-error-helper-text"
-                    label="Max Capacity"
-                    // defaultValue="Hello World"
-                    helperText={errMaxCapMessg}
-                  />
-                </FormControl>
-              </Grid>
-
-              <Grid item md={3} xs={6} sm={4}>
-                <FormControl fullWidth>
-                  <TextField
-                    onChange={onChangeReserveSeat}
-                    value={reservedSeat}
-                    error={Boolean(errReservedSeatMessg)}
-                    id="outlined-error-helper-text"
-                    label="Reserved Seat"
-                    helperText={errReservedSeatMessg}
-                  />
-                </FormControl>
-              </Grid>
-            </Grid>
-            <Box display="flex" justifyContent="right" paddingTop={2}>
-              <Button
-                onClick={() => {
-                  createSeatList();
-                }}
-                variant="contained"
-                color="primary"
-              >
-                Create
-              </Button>
+                    Create
+                  </Button>
+                </Box>
+              ) : (
+                <Button
+                  onClick={() => {
+                    setConfigureSeat(true);
+                  }}
+                  variant="contained"
+                  color="primary"
+                >
+                  Configure Seat
+                </Button>
+              )}
             </Box>
-
+            <Box display="flex" justifyContent="left">
+              <Typography variant="h5">Cubicle Across All Location </Typography>
+            </Box>
             <Box paddingTop={2}>
-              <AdminListViewPage data={data} isLoading={isLoading} />
+              <AdminListViewPage
+                data={data}
+                isLoading={isLoading}
+                openFloorView={openFloorView}
+              />
             </Box>
           </Box>
-        </Fade> */}
+        </Fade>
+        <Fade in={viewFloorArrangment} unmountOnExit>
+          <Box>
+            <AdminFloorView
+              locationSelected={selectedLocation}
+              floor={selectedFloor}
+              goBack={goBack}
+            />
+          </Box>
+        </Fade>
       </Box>
       <Box>
-        <Fade in={true} unmountonExit>
+        <Fade in={false} unmountOnExit>
           <Box>
             <ITDepartmentScreen />
           </Box>

@@ -35,10 +35,10 @@ import Slide from "@mui/material/Slide";
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
-function ITDepartmentScreen() {
+function AdminFloorView({ locationSelected, floor, goBack }) {
   const [data, setData] = useState([]);
-  const [locationSelected, setLocationSelected] = useState();
-  const [floor, setFloor] = useState([]);
+  //   const [locationSelected, setLocationSelected] = useState();
+  //   const [floor, setFloor] = useState([]);
   const [isLoading, setIsLoading] = useState();
   const [searchOption, setSearchOption] = useState("");
   const [searchValue, setSearchValue] = useState("");
@@ -53,7 +53,7 @@ function ITDepartmentScreen() {
   const [seatId, setEmpSeatId] = useState();
 
   const [shortSearchValue, setShortSearchValue] = useState();
-  const [pageSize, setPageSize] = useState();
+  const [pageSize, setPageSize] = useState(10);
 
   const [deleteEmpData, setDeleteEmpData] = useState();
   const [openDeletePopup, setOpenDeletePopup] = useState(false);
@@ -94,9 +94,9 @@ function ITDepartmentScreen() {
       }
     }
   };
-  const handleChangeLocation = (event) => {
-    setLocationSelected(event.target.value);
-  };
+  //   const handleChangeLocation = (event) => {
+  //     setLocationSelected(event.target.value);
+  //   };
   const handleChangeSearchBy = (event) => {
     setSearchOption(event.target.value);
   };
@@ -109,25 +109,25 @@ function ITDepartmentScreen() {
     // }, 1000);
   };
   const floorArr = [1, 2, 3, 4, 5, 6, 7, 8, 9];
-  const onChangeFloor = (event) => {
-    const {
-      target: { value },
-    } = event;
-    console.log(value);
-    if (value[value.length - 1] === "All") {
-      setFloor(floor.length === floorArr.length ? [] : [...floorArr]);
-      //setSelected(selected.length === options.length ? [] : options);
-      return;
-    }
-    setFloor(typeof value === "string" ? value.split(",") : value);
-  };
+  //   const onChangeFloor = (event) => {
+  //     const {
+  //       target: { value },
+  //     } = event;
+  //     console.log(value);
+  //     if (value[value.length - 1] === "All") {
+  //       setFloor(floor.length === floorArr.length ? [] : [...floorArr]);
+  //       return;
+  //     }
+  //     setFloor(typeof value === "string" ? value.split(",") : value);
+  //   };
 
   const getFilteredList = () => {
     setIsLoading(true);
     if (filterArr?.length > 0) {
       const _data = bangloreData
         ?.filter((data) => {
-          return floor.includes(data.floor);
+          // return floor.includes(data.floor);
+          return floor === data.floor;
         })
         ?.filter((bd) => {
           if (filterArr.includes("Occupied Day Shift Only")) {
@@ -172,9 +172,9 @@ function ITDepartmentScreen() {
       return _data;
     } else {
       const _data = bangloreData?.filter((bd) => {
-        return floor.includes(bd.floor);
+        return floor == bd.floor;
       });
-      //setData([..._data]);
+
       return _data;
     }
   };
@@ -377,7 +377,7 @@ function ITDepartmentScreen() {
       setIsLoading(true);
       console.log(floor);
       const _data = bangloreData?.filter((bd) => {
-        return floor.includes(bd.floor);
+        return floor == bd.floor;
       });
       console.log(_data);
       setTimeout(() => {
@@ -494,17 +494,16 @@ function ITDepartmentScreen() {
         <Grid container spacing={2}>
           <Grid item sm={4} xs={12} md={5}>
             <FormControl fullWidth>
-              <InputLabel id="demo-simple-select-label">
-                Choose Location
-              </InputLabel>
+              <InputLabel id="demo-simple-select-label">Location</InputLabel>
               <Select
                 labelId="demo-simple-select-label"
                 id="demo-simple-select"
                 value={locationSelected}
-                label="Choose Location"
-                onChange={handleChangeLocation}
+                label="Location"
+                disabled
+                // onChange={handleChangeLocation}
               >
-                <MenuItem value="Bengalore">Bengalore</MenuItem>
+                <MenuItem value="Banglore">Banglore</MenuItem>
                 <MenuItem value="Coimbtore">Coimbtore</MenuItem>
                 <MenuItem value="Mohali">Mohali</MenuItem>
                 <MenuItem value="Pune">Pune</MenuItem>
@@ -513,15 +512,14 @@ function ITDepartmentScreen() {
           </Grid>
           <Grid item sm={4} xs={12} md={5}>
             <FormControl fullWidth>
-              <InputLabel id="demo-simple-select-floor">
-                Select Floor(s)
-              </InputLabel>
+              <InputLabel id="demo-simple-select-floor">Floor</InputLabel>
               <Select
-                multiple
+                // multiple
                 labelId="demo-simple-select-floor"
                 value={floor}
-                label=" Select Floor(s)"
-                onChange={onChangeFloor}
+                label="Floor"
+                disabled
+                // onChange={onChangeFloor}
                 MenuProps={MenuProps}
               >
                 <MenuItem disabled value="">
@@ -596,9 +594,9 @@ function ITDepartmentScreen() {
               alignItems: "center",
             }}
             item
-            sm={2}
-            xs={6}
-            md={2}
+            sm={1}
+            xs={3}
+            md={1}
           >
             <Box style={{ cursor: "pointer" }}>
               <IconButton
@@ -739,15 +737,28 @@ function ITDepartmentScreen() {
               </Box>
             </Menu>
           </Grid>
-
-          {/* <Grid
+          <Grid
+            style={{
+              display: "flex",
+              alignItems: "center",
+            }}
+            item
+            sm={1}
+            xs={3}
+            md={1}
+          >
+            <Button onClick={goBack} variant="contained" color="inherit">
+              Back
+            </Button>
+          </Grid>
+          <Grid
             style={{
               display: "flex",
               alignItems: "center",
             }}
             item
             sm={2}
-            xs={6}
+            xs={3}
             md={2}
           >
             <Button
@@ -757,7 +768,7 @@ function ITDepartmentScreen() {
             >
               Add More
             </Button>
-          </Grid> */}
+          </Grid>
         </Grid>
       </Box>
       <Box padding={2}>
@@ -808,11 +819,11 @@ function ITDepartmentScreen() {
                   </Typography>
                 </TableCell>
 
-                {/* <TableCell align="center">
+                <TableCell align="center">
                   <Typography color="#000" variant="h6">
                     Delete
                   </Typography>
-                </TableCell> */}
+                </TableCell>
               </TableRow>
             </TableHead>
             {isLoading ? (
@@ -904,7 +915,7 @@ function ITDepartmentScreen() {
                         />
                       </IconButton>
                     </TableCell>
-                    {/* <TableCell align="center">
+                    <TableCell align="center">
                       <IconButton
                         onClick={() => {
                           handleClickOpenDelete(row);
@@ -915,7 +926,7 @@ function ITDepartmentScreen() {
                           fontSize="small"
                         />
                       </IconButton>
-                    </TableCell> */}
+                    </TableCell>
                   </TableRow>
                 ))}
                 {/* )} */}
@@ -990,8 +1001,10 @@ function ITDepartmentScreen() {
         handleClickOpenAddMore={handleClickOpenAddMore}
         handleClickCloseAddMore={handleClickCloseAddMore}
         openAddMore={addMore}
+        locationSelected={locationSelected}
+        selectedFloor={floor}
       />
     </>
   );
 }
-export default ITDepartmentScreen; //
+export default AdminFloorView; //

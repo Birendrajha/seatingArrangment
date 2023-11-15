@@ -21,11 +21,12 @@ import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
 import TextField from "@mui/material/TextField";
+import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
-function AdminListViewPage({ data, isLoading }) {
+function AdminListViewPage({ data, isLoading, openFloorView }) {
   const rows = [
     { location: "Banglore", floor: "1st", maxCap: "200", reservedSeat: "25" },
     { location: "Banglore", floor: "2nd", maxCap: "200", reservedSeat: "25" },
@@ -140,6 +141,11 @@ function AdminListViewPage({ data, isLoading }) {
               </TableCell>
               <TableCell align="center">
                 <Typography color="antiquewhite" variant="h6">
+                  View
+                </Typography>
+              </TableCell>
+              <TableCell align="center">
+                <Typography color="antiquewhite" variant="h6">
                   Delete
                 </Typography>
               </TableCell>
@@ -172,6 +178,18 @@ function AdminListViewPage({ data, isLoading }) {
                       }}
                     >
                       <EditIcon
+                        style={{ cursor: "pointer" }}
+                        fontSize="small"
+                      />
+                    </IconButton>
+                  </TableCell>
+                  <TableCell align="center">
+                    <IconButton
+                      onClick={() => {
+                        openFloorView(row);
+                      }}
+                    >
+                      <RemoveRedEyeIcon
                         style={{ cursor: "pointer" }}
                         fontSize="small"
                       />
